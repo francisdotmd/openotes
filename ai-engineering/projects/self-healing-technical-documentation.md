@@ -64,6 +64,14 @@ Key design choices: prefer machine-readable signals (types/schemas) for *detecti
 
 ## Open Questions
 
+- What's the unit of drift — whole doc, section, or single claim?
+- Who owns the mapping layer (doc ↔ source) — manual annotation or auto-inference?
+- How do we measure "healing" quality (false positives/negatives, reviewer accept rate)?
+- What's the rollback story for a wrong auto-drafted edit?
+- Scope guardrails — which doc types do we NOT touch in v1?
+- Cost/latency budget — who pays for LLM calls, CI or async?
+- Adoption path — opt-in per repo or org-wide default?
+
 - Which signals best indicate drift (tests, types, changelogs)?
   - **Recommendation:** ranked by reliability — (1) types/schemas (strongest, machine-readable contracts, cheap to compare); (2) tests (encode intended behavior, change → docs likely should too); (3) changelogs/release notes (coarse triage trigger); (4) code diffs on touched paths (heuristic, broad but noisy); (5) build/CI failures from runnable doc examples (direct breakage). Practical combo: types as hard signal, tests as behavior signal, changelogs as triage trigger. Start with types+tests on one doc set.
 - How to handle docs with no clear code counterpart?
