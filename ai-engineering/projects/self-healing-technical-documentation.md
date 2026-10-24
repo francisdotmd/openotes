@@ -7,7 +7,7 @@ tags:
   - self-healing
 ---
 
-# Self-Healing Technical Documentation
+# Self-Healing Technical
 
 ## Overview
 
