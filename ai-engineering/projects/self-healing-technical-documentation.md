@@ -9,8 +9,6 @@ tags:
 
 # Self-Healing Technical Documentation
 
-## Overview
-
 A project exploring how to make technical documentation **self-healing** — docs that detect staleness, drift, and inaccuracies on their own and propose or apply corrections without manual upkeep.
 
 ## Problem
@@ -21,10 +19,10 @@ Technical docs rot. Code changes, APIs evolve, and the written guides fall behin
 
 Build a system where documentation:
 
-- Monitors the codebase / source of truth it describes.
-- Detects drift between docs and reality.
-- Generates or proposes updated content automatically.
-- Keeps a human in the loop for review before publishing.
+- **Monitors the codebase / source of truth it describes.** Continuously (or on-trigger) ingests code, schemas, types, tests, and changelogs so the system always has a current picture of reality to compare against.
+- **Detects drift between docs and reality.** Compares each doc's claims against the source of truth and flags mismatches, stale sections, and broken examples — using machine-readable signals (types/schemas/tests) first.
+- **Generates or proposes updated content automatically.** Uses an LLM, constrained to the changed facts, to draft corrections or open update PRs rather than just reporting staleness.
+- **Keeps a human in the loop for review before publishing.** Surfaces drafts via PRs/inline suggestions for approval; reserves auto-merge only for mechanical, high-confidence, reversible edits.
 
 ## Approach (draft)
 
