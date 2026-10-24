@@ -13,10 +13,6 @@ tags:
 
 A project exploring how to make technical documentation **self-healing** — docs that detect staleness, drift, and inaccuracies on their own and propose or apply corrections without manual upkeep.
 
-- **Source:** [YouTube — Self-Healing Technical Documentation](https://www.youtube.com/watch?v=6RADVVSDZK8)
-- **Area:** AI Engineering
-- **Status:** Research / early exploration
-
 ## Problem
 
 Technical docs rot. Code changes, APIs evolve, and the written guides fall behind. The cost of keeping docs accurate is high and usually deferred, so users hit outdated instructions.
