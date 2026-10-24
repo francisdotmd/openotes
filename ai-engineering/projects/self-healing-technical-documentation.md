@@ -34,6 +34,20 @@ Build a system where documentation:
 4. **Draft** corrections with an LLM.
 5. **Review & merge** via a human-in-the-loop workflow.
 
+## How It Works
+
+Core loop — **detect → diagnose → draft → review → publish**:
+
+1. **Ingest the source of truth.** Pull code, schemas, types, tests, changelogs into a structured form the system can compare against. This is the "ground truth" snapshot.
+2. **Map docs to sources.** Each doc section is tagged with the code/symbol it describes (e.g., an endpoint doc links to its route handler + OpenAPI entry). Without this mapping, you can't know what "should" be true.
+3. **Detect drift.** Compare the doc's claims against the current source truth: schema diff, test changes, referenced-file changes, failing runnable examples.
+4. **Diagnose & scope.** Decide which parts of a doc are affected and how stale (minor wording vs. breaking change). Route to the right owner.
+5. **Draft corrections with an LLM.** Given the diff + current source, generate updated prose/code examples, constrained to the changed facts.
+6. **Human-in-the-loop review.** Open a PR or inline suggestion; a maintainer approves. Auto-merge only for low-risk, high-confidence edits.
+7. **Publish & re-baseline.** Update doc, re-snapshot the source truth, reset the drift clock.
+
+Key design choices: prefer machine-readable signals (types/schemas) for *detection*, use the LLM only for *drafting*; keep a doc↔source mapping layer (that's the real asset); start narrow — one doc set, one signal type — and measure false positives before scaling.
+
 ## Value for Software Engineers
 
 - **Less doc debt, more shipping.** Docs rot silently; self-healing automates the part nobody volunteers for.
