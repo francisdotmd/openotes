@@ -65,6 +65,7 @@ Key design choices: prefer machine-readable signals (types, schemas) for detecti
 ## Open Questions
 
 - Which signals best indicate drift (tests, types, changelogs)?
+  - **Why ask**: the choice of signal determines precision and cost; weak signals create alert fatigue, strong signals may miss narrative drift.
   - **Recommendation**: ranked by reliability. (1) types and schemas (strongest, machine-readable contracts, cheap to compare); (2) tests (encode intended behavior, change means docs likely should too); (3) changelogs and release notes (coarse triage trigger); (4) code diffs on touched paths (heuristic, broad but noisy); (5) build and CI failures from runnable doc examples (direct breakage). Practical combo: types as hard signal, tests as behavior signal, changelogs as triage trigger. Start with types plus tests on one doc set.
 - How to handle docs with no clear code counterpart?
   - **Why ask**: not every doc maps to code (concepts, runbooks, onboarding); forcing a mapping creates false confidence and ignores the real drift signals for those types.
