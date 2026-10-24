@@ -75,6 +75,7 @@ Key design choices: prefer machine-readable signals (types/schemas) for *detecti
 - Who owns the mapping layer (manual annotation or auto-inference)?
   - **Recommendation:** hybrid — auto-infer a first pass (cheap, broad), let engineers confirm/correct with one click, and persist corrections as the source of truth. Over time confirmed mappings become a reliable asset and inference improves from them. Start manual-only on a tiny pilot to validate the signal before investing in inference.
 - How do we measure "healing" quality (false positives, false negatives, reviewer accept rate)?
+  - **Recommendation:** track detection metrics (false positive rate = dismissed/ignored alerts ÷ total; false negative rate via periodic manual sampling or proxy of doc-related support tickets/incidents; precision/recall per signal type to drop noisy ones) and remediation metrics (reviewer accept rate = accepted-as-is vs. edited vs. rejected; time-to-fix; doc-related incidents/support tickets trending down). Baseline: manually label \~50 drift cases, compute precision/recall per signal, set an accept-rate threshold (≥70% accept, ≤20% edit) before enabling auto-drafting; re-measure monthly.
 - What is the rollback story for a wrong auto-drafted edit?
 - Which doc types do we skip in v1?
 - Who pays for LLM calls (CI or async) and what is the latency budget?
