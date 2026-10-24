@@ -64,6 +64,21 @@ Key design choices: prefer machine-readable signals (types/schemas) for *detecti
 
 ## Open Questions
 
+- Which signals best indicate drift (tests, types, changelogs)?
+  - **Recommendation:** ranked by reliability — (1) types/schemas (strongest, machine-readable contracts, cheap to compare); (2) tests (encode intended behavior, change → docs likely should too); (3) changelogs/release notes (coarse triage trigger); (4) code diffs on touched paths (heuristic, broad but noisy); (5) build/CI failures from runnable doc examples (direct breakage). Practical combo: types as hard signal, tests as behavior signal, changelogs as triage trigger. Start with types+tests on one doc set.
+- How to handle docs with no clear code counterpart?
+  - **Recommendation:** don't force a code link — classify by `doc_type` and apply different rules: conceptual/architecture docs map to decision records/owners (drift signal = design decision changed, not code); runbooks map to process (drift signal = commands still run, via CI smoke tests); onboarding/narrative docs use a staleness clock + periodic human review (`last_verified` in frontmatter); tutorials/examples become runnable (doctests) so they break loudly on drift. Only enforce code-mapping + drift detection on `api-reference` and runnable tutorials.
+- What's the review UX (PRs, inline suggestions, or auto-merge with audit)?
+  - **Recommendation:** staged — start with PRs (builds trust, familiar, auditable), add inline suggestions for low-friction small edits, reserve auto-merge-with-audit for mechanical, high-confidence, tiny diffs (renamed params, version bumps). Autonomy scales with reversibility + mechanicalness, not LLM quality.
+- What is the unit of drift (whole doc, section, or single claim)?
+  - **Recommendation:** section-level. A whole doc is too coarse (one stale line blocks the rest); a single claim is too fine (mapping cost explodes and reviews become noise). Section-level matches how docs are authored and reviewed, and keeps the mapping layer tractable.
+- Who owns the mapping layer (manual annotation or auto-inference)?
+- How do we measure "healing" quality (false positives, false negatives, reviewer accept rate)?
+- What is the rollback story for a wrong auto-drafted edit?
+- Which doc types do we skip in v1?
+- Who pays for LLM calls (CI or async) and what is the latency budget?
+- Is adoption opt-in per repo or an org-wide default?
+
 - What's the unit of drift — whole doc, section, or single claim?
 - Who owns the mapping layer (doc ↔ source) — manual annotation or auto-inference?
 - How do we measure "healing" quality (false positives/negatives, reviewer accept rate)?
@@ -71,10 +86,3 @@ Key design choices: prefer machine-readable signals (types/schemas) for *detecti
 - Scope guardrails — which doc types do we NOT touch in v1?
 - Cost/latency budget — who pays for LLM calls, CI or async?
 - Adoption path — opt-in per repo or org-wide default?
-
-- Which signals best indicate drift (tests, types, changelogs)?
-  - **Recommendation:** ranked by reliability — (1) types/schemas (strongest, machine-readable contracts, cheap to compare); (2) tests (encode intended behavior, change → docs likely should too); (3) changelogs/release notes (coarse triage trigger); (4) code diffs on touched paths (heuristic, broad but noisy); (5) build/CI failures from runnable doc examples (direct breakage). Practical combo: types as hard signal, tests as behavior signal, changelogs as triage trigger. Start with types+tests on one doc set.
-- How to handle docs with no clear code counterpart?
-  - **Recommendation:** don't force a code link — classify by `doc_type` and apply different rules: conceptual/architecture docs map to decision records/owners (drift signal = design decision changed, not code); runbooks map to process (drift signal = commands still run, via CI smoke tests); onboarding/narrative docs use a staleness clock + periodic human review (`last_verified` in frontmatter); tutorials/examples become runnable (doctests) so they break loudly on drift. Only enforce code-mapping + drift detection on `api-reference` and runnable tutorials.
-- What's the review UX — PRs, inline suggestions, or auto-merge with audit?
-  - **Recommendation:** staged — start with PRs (builds trust, familiar, auditable), add inline suggestions for low-friction small edits, reserve auto-merge-with-audit for mechanical, high-confidence, tiny diffs (renamed params, version bumps). Autonomy scales with reversibility + mechanicalness, not LLM quality.
