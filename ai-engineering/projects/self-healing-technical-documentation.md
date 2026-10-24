@@ -56,26 +56,11 @@ Key design choices: prefer machine-readable signals (types/schemas) for *detecti
 - **Incident reduction.** Outdated runbooks cause outages; auto-flagging stale steps catches them before use.
 - **Knowledge scales.** As systems grow, manual doc maintenance breaks down; automation keeps pace.
 
-## Drift Signals
-
-Ranked by reliability:
-
-1. **Types / schemas (strongest).** OpenAPI, GraphQL, DB schemas, TS types — machine-readable contracts. If the doc contradicts the schema, that's objective drift. Cheap to compare.
-2. **Tests.** A doc claiming "endpoint returns X" can be checked against integration tests. Tests encode intended behavior; when they change, docs likely should too.
-3. **Changelogs / release notes.** Coarse but directional — good for "something changed here, re-check these docs," weak on specifics.
-4. **Code diffs on touched paths.** Heuristic: if a doc references a file/module that changed, flag it. Noisy but broad.
-5. **Build / CI failures.** Doc examples actually run (doctests, code fences) failing = direct drift signal.
-
-Practical combo: types as the hard signal, tests as behavior signal, changelogs as a triage trigger. Start with types+tests on a single doc set.
-
 ## Open Questions
 
-- Which signals best indicate drift (tests, types, changelogs)? *(See Drift Signals above.)*
-- How to handle docs with no clear code counterpart? **Recommendation:** don't force a code link — classify by `doc_type` and apply different rules: conceptual/architecture docs map to decision records/owners (drift signal = design decision changed, not code); runbooks map to process (drift signal = commands still run, via CI smoke tests); onboarding/narrative docs use a staleness clock + periodic human review (`last_verified` in frontmatter); tutorials/examples become runnable (doctests) so they break loudly on drift. Only enforce code-mapping + drift detection on `api-reference` and runnable tutorials.
-- What's the review UX — PRs, inline suggestions, or auto-merge with audit? **Recommendation:** staged — start with PRs (builds trust, familiar, auditable), add inline suggestions for low-friction small edits, reserve auto-merge-with-audit for mechanical, high-confidence, tiny diffs (renamed params, version bumps). Autonomy scales with reversibility + mechanicalness, not LLM quality.
-
-## Next Steps
-
-- Watch the source video and capture concrete techniques.
-- Prototype a small drift detector on one doc set.
-- Define evaluation: how do we measure "healing" quality?
+- Which signals best indicate drift (tests, types, changelogs)?
+  - **Recommendation:** ranked by reliability — (1) types/schemas (strongest, machine-readable contracts, cheap to compare); (2) tests (encode intended behavior, change → docs likely should too); (3) changelogs/release notes (coarse triage trigger); (4) code diffs on touched paths (heuristic, broad but noisy); (5) build/CI failures from runnable doc examples (direct breakage). Practical combo: types as hard signal, tests as behavior signal, changelogs as triage trigger. Start with types+tests on one doc set.
+- How to handle docs with no clear code counterpart?
+  - **Recommendation:** don't force a code link — classify by `doc_type` and apply different rules: conceptual/architecture docs map to decision records/owners (drift signal = design decision changed, not code); runbooks map to process (drift signal = commands still run, via CI smoke tests); onboarding/narrative docs use a staleness clock + periodic human review (`last_verified` in frontmatter); tutorials/examples become runnable (doctests) so they break loudly on drift. Only enforce code-mapping + drift detection on `api-reference` and runnable tutorials.
+- What's the review UX — PRs, inline suggestions, or auto-merge with audit?
+  - **Recommendation:** staged — start with PRs (builds trust, familiar, auditable), add inline suggestions for low-friction small edits, reserve auto-merge-with-audit for mechanical, high-confidence, tiny diffs (renamed params, version bumps). Autonomy scales with reversibility + mechanicalness, not LLM quality.
