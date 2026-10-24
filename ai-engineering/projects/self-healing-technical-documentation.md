@@ -73,6 +73,7 @@ Key design choices: prefer machine-readable signals (types/schemas) for *detecti
 - What is the unit of drift (whole doc, section, or single claim)?
   - **Recommendation:** section-level. A whole doc is too coarse (one stale line blocks the rest); a single claim is too fine (mapping cost explodes and reviews become noise). Section-level matches how docs are authored and reviewed, and keeps the mapping layer tractable.
 - Who owns the mapping layer (manual annotation or auto-inference)?
+  - **Recommendation:** hybrid — auto-infer a first pass (cheap, broad), let engineers confirm/correct with one click, and persist corrections as the source of truth. Over time confirmed mappings become a reliable asset and inference improves from them. Start manual-only on a tiny pilot to validate the signal before investing in inference.
 - How do we measure "healing" quality (false positives, false negatives, reviewer accept rate)?
 - What is the rollback story for a wrong auto-drafted edit?
 - Which doc types do we skip in v1?
