@@ -72,7 +72,7 @@ Practical combo: types as the hard signal, tests as behavior signal, changelogs 
 
 - Which signals best indicate drift (tests, types, changelogs)? *(See Drift Signals above.)*
 - How to handle docs with no clear code counterpart?
-- What's the review UX — PRs, inline suggestions, or auto-merge with audit?
+- What's the review UX — PRs, inline suggestions, or auto-merge with audit? **Recommendation:** staged — start with PRs (builds trust, familiar, auditable), add inline suggestions for low-friction small edits, reserve auto-merge-with-audit for mechanical, high-confidence, tiny diffs (renamed params, version bumps). Autonomy scales with reversibility + mechanicalness, not LLM quality.
 
 ## Next Steps
 
