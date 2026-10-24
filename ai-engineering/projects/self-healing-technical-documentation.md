@@ -15,6 +15,14 @@ A project exploring how to make technical documentation **self-healing** — doc
 
 Technical docs rot. Code changes, APIs evolve, and the written guides fall behind. The cost of keeping docs accurate is high and usually deferred, so users hit outdated instructions.
 
+**How it shows up in real life:**
+
+- **Renamed API field, stale doc.** A backend renames `user_id` → `userId` in a response. The OpenAPI spec updates via codegen, but the hand-written "Getting Started" guide still shows `user_id`. A new integrator copies the example, gets `undefined`, files a support ticket.
+- **Removed flag, lingering instructions.** A feature flag `enableBetaSearch` is deleted. The runbook still says "toggle `enableBetaSearch` to enable search." An on-call engineer follows it during an incident and wastes 20 minutes before realizing the flag is gone.
+- **Changed default, wrong expectation.** A library bumps a default timeout from 30s to 10s. The docs say "default 30s." Users build retry logic around the wrong assumption; subtle latency bugs appear in production.
+- **Moved file, broken example.** A refactor moves `src/utils/auth.ts` → `src/auth/index.ts`. A tutorial's import snippet `from '../utils/auth'` now fails. The doc example is never run in CI, so nobody notices until a reader complains.
+- **Stale onboarding.** A new hire follows the "local setup" guide; step 3 installs a deprecated tool. They spend a day debugging before a teammate says "oh, we switched to X months ago."
+
 ## Goal
 
 Build a system where documentation:
