@@ -71,7 +71,7 @@ Practical combo: types as the hard signal, tests as behavior signal, changelogs 
 ## Open Questions
 
 - Which signals best indicate drift (tests, types, changelogs)? *(See Drift Signals above.)*
-- How to handle docs with no clear code counterpart?
+- How to handle docs with no clear code counterpart? **Recommendation:** don't force a code link — classify by `doc_type` and apply different rules: conceptual/architecture docs map to decision records/owners (drift signal = design decision changed, not code); runbooks map to process (drift signal = commands still run, via CI smoke tests); onboarding/narrative docs use a staleness clock + periodic human review (`last_verified` in frontmatter); tutorials/examples become runnable (doctests) so they break loudly on drift. Only enforce code-mapping + drift detection on `api-reference` and runnable tutorials.
 - What's the review UX — PRs, inline suggestions, or auto-merge with audit? **Recommendation:** staged — start with PRs (builds trust, familiar, auditable), add inline suggestions for low-friction small edits, reserve auto-merge-with-audit for mechanical, high-confidence, tiny diffs (renamed params, version bumps). Autonomy scales with reversibility + mechanicalness, not LLM quality.
 
 ## Next Steps
