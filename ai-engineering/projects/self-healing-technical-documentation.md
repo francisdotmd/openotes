@@ -85,7 +85,12 @@ Key design choices: prefer machine-readable signals (types, schemas) for detecti
 **Storage and state:**
 - Git for docs; a small DB (Postgres or SQLite) for mapping metadata, metrics, and job state if needed.
 
-**Minimal v1 with UI:** A small web app (Next.js or similar) with three views: (1) a drift dashboard listing flagged docs and their signals; (2) a side-by-side diff view showing the current doc vs. the LLM-drafted fix with accept, edit, reject actions; (3) a mapping editor to link doc sections to source symbols. Backed by the same CI detection (GitHub Actions running on PRs and schedule) and an LLM API for drafting. Auto-merge off; all accepted fixes become PRs. Auth via GitHub OAuth so it only touches repos the user owns.
+**Minimal v1 with UI (open-source, local-first):** A self-hostable web app (Next.js or similar) you run locally or on your own infra. Docs stay as markdown in the repo; the app only drafts and reviews. Key properties:
+- **Bring your own key:** configure any LLM provider (OpenAI, Anthropic, or a local model via Ollama) with your own API key; optionally use a Codex/Claude subscription via their CLIs/APIs.
+- **Local-first:** detection can run locally (CLI) or in CI; the web UI runs on `localhost` and talks to your repo and your key. No data leaves your machine except LLM calls you control.
+- **Three views:** (1) drift dashboard listing flagged docs and their signals; (2) side-by-side diff view (current doc vs. LLM fix) with accept, edit, reject; (3) mapping editor to link doc sections to source symbols.
+- **Publishing:** accepted fixes become PRs (or direct commits) against your repo; auto-merge off by default.
+- **Open source:** MIT/Apache license, self-hostable, no hosted dependency; GitHub OAuth optional for multi-user setups.
 
 ## Open Questions
 
