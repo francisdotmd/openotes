@@ -85,12 +85,18 @@ Key design choices: prefer machine-readable signals (types, schemas) for detecti
 **Storage and state:**
 - Git for docs; a small DB (Postgres or SQLite) for mapping metadata, metrics, and job state if needed.
 
-**Minimal v1:** An installable tool you add to a repo (CLI + MCP server), not a hosted web app. Docs stay as markdown in the repo; the tool drafts and reviews in place. Key properties:
+**Minimal v1 (your own, better than generic doc platforms):** An installable, drift-first tool (CLI + MCP server) that does one thing well: detect and repair doc drift. Not a general knowledge base. Key properties:
 
-- **Install, don't host:** `npm install` / `npx` (or a global CLI) wires it into the repo; runs locally against your files, like `ok init`.
-- **Bring your own key:** configure any LLM provider (OpenAI, Anthropic, or a local model via Ollama) with your own API key; optionally reuse a Codex or Claude subscription via their CLIs/APIs.
+- **Install, don't host:** `npm install` / `npx` (or a global CLI) wires it into the repo; runs locally against your files.
+- **Bring your own key:** configure any LLM provider (OpenAI, Anthropic, or a local model via Ollama) with your own API key; optionally reuse a Codex or Claude subscription via their CLIs/APIs. No vendor lock-in.
 - **Local-first:** detection and drafting run on your machine; nothing leaves except LLM calls you control. No hosted backend, no account required.
-- **Surfaces:** a CLI for detection and drafting (`self-heal check`, `self-heal draft`), plus an MCP server exposing tools to agents (drift list, draft, accept/reject), and a lightweight local preview UI (like `ok open`) for the side-by-side diff and mapping editor.
+- **Drift-first, not doc-first:** purpose-built for drift detection and repair. Every feature serves that loop; not a generic doc platform.
+- **Stronger mapping layer:** explicit doc-to-source-symbol mapping with confidence scores, the real asset for drift detection (beyond plain wiki-links).
+- **Section-level granularity:** edits are surgical and reversible, not whole-page rewrites.
+- **Signal ranking:** types and schemas first, tests second, changelogs as triage. Machine-readable truth prioritized over narrative changes.
+- **Review UX as the product:** side-by-side diff with accept, edit, reject, plus a kill switch. The core experience, not an afterthought.
+- **Metrics built in:** track false-positive rate and accept rate from day one; most tools ship blind.
+- **Surfaces:** a CLI for detection and drafting (`self-heal check`, `self-heal draft`), an MCP server exposing tools to agents (drift list, draft, accept/reject), and a lightweight local preview UI for the side-by-side diff and mapping editor.
 - **Publishing:** accepted fixes become commits or PRs against your repo; auto-merge off by default.
 - **Open source:** MIT/Apache license, no hosted dependency.
 
