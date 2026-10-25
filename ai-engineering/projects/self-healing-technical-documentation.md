@@ -85,12 +85,14 @@ Key design choices: prefer machine-readable signals (types, schemas) for detecti
 **Storage and state:**
 - Git for docs; a small DB (Postgres or SQLite) for mapping metadata, metrics, and job state if needed.
 
-**Minimal v1 with UI (open-source, local-first):** A self-hostable web app (Next.js or similar) you run locally or on your own infra. Docs stay as markdown in the repo; the app only drafts and reviews. Key properties:
-- **Bring your own key:** configure any LLM provider (OpenAI, Anthropic, or a local model via Ollama) with your own API key; optionally use a Codex/Claude subscription via their CLIs/APIs.
-- **Local-first:** detection can run locally (CLI) or in CI; the web UI runs on `localhost` and talks to your repo and your key. No data leaves your machine except LLM calls you control.
-- **Three views:** (1) drift dashboard listing flagged docs and their signals; (2) side-by-side diff view (current doc vs. LLM fix) with accept, edit, reject; (3) mapping editor to link doc sections to source symbols.
-- **Publishing:** accepted fixes become PRs (or direct commits) against your repo; auto-merge off by default.
-- **Open source:** MIT/Apache license, self-hostable, no hosted dependency; GitHub OAuth optional for multi-user setups.
+**Minimal v1:** An installable tool you add to a repo (CLI + MCP server), not a hosted web app. Docs stay as markdown in the repo; the tool drafts and reviews in place. Key properties:
+
+- **Install, don't host:** `npm install` / `npx` (or a global CLI) wires it into the repo; runs locally against your files, like `ok init`.
+- **Bring your own key:** configure any LLM provider (OpenAI, Anthropic, or a local model via Ollama) with your own API key; optionally reuse a Codex or Claude subscription via their CLIs/APIs.
+- **Local-first:** detection and drafting run on your machine; nothing leaves except LLM calls you control. No hosted backend, no account required.
+- **Surfaces:** a CLI for detection and drafting (`self-heal check`, `self-heal draft`), plus an MCP server exposing tools to agents (drift list, draft, accept/reject), and a lightweight local preview UI (like `ok open`) for the side-by-side diff and mapping editor.
+- **Publishing:** accepted fixes become commits or PRs against your repo; auto-merge off by default.
+- **Open source:** MIT/Apache license, no hosted dependency.
 
 ## Open Questions
 
@@ -117,7 +119,7 @@ Key design choices: prefer machine-readable signals (types, schemas) for detecti
   - **Recommendation**: git is the rollback (every auto-drafted edit is a commit or PR, so revert is one command; keep auto-merged edits as individual commits, not squashed). Keep edits small and scoped (section-level) so reverts are surgical. Re-baseline after revert: revert the doc, re-snapshot the source truth, reset the drift clock so the system doesn't re-flag the now-correct doc. Tag auto-drafted commits (e.g., `auto-doc-fix`) to find and batch-revert if a prompt or model change was systematically wrong. Add a per-repo kill switch to disable auto-drafting instantly and fall back to "flag only" mode.
 - Who pays for LLM calls (CI or async) and what is the latency budget?
   - **Why ask**: LLM calls cost money and take time; without a clear owner and budget, costs surprise teams and slow adoption, and synchronous drafting blocks the merge flow.
-  - **Recommendation**: run async by default (background job on PR open or on schedule, post results as a PR comment or draft) to keep the merge flow fast; reserve sync for tiny high-value triggers (e.g., a schema change touching a mapped doc). Set a latency budget (draft available within ~5 minutes) and a cost cap (N calls per PR, monthly per-repo ceiling); drop low-confidence drafts rather than spend to refine. Attribute cost to the repo or team that owns the doc and make it visible in a dashboard.
+  - **Recommendation**: run async by default (background job on PR open or on schedule, post results as a PR comment or draft) to keep the merge flow fast; reserve sync for tiny high-value triggers (e.g., a schema change touching a mapped doc). Set a latency budget (draft available within \~5 minutes) and a cost cap (N calls per PR, monthly per-repo ceiling); drop low-confidence drafts rather than spend to refine. Attribute cost to the repo or team that owns the doc and make it visible in a dashboard.
 - Is adoption opt-in per repo or an org-wide default?
   - **Why ask**: org-wide default risks blast radius from a buggy drafter or noisy signal; opt-in slows adoption but limits damage; repos also differ in doc maturity and signal availability.
   - **Recommendation**: opt-in per repo to start (lower risk, lets willing teams validate the signal and build trust, surfaces real edge cases before scaling). Provide a starter config (mapped doc types, enabled signals, auto-merge off by default) so opt-in is a one-line change. Graduate to org-wide default only after a few repos hit the accept-rate threshold and false-positive rate is low; keep a per-repo escape hatch even then. Tier by repo maturity: auto-enable on repos with strong CI and schema signals; leave narrative-heavy repos opt-in.
