@@ -96,7 +96,7 @@ Key design choices: prefer machine-readable signals (types, schemas) for detecti
 - **Signal ranking:** types and schemas first, tests second, changelogs as triage. Machine-readable truth prioritized over narrative changes.
 - **Review UX as the product:** side-by-side diff with accept, edit, reject, plus a kill switch. The core experience, not an afterthought.
 - **Metrics built in:** track false-positive rate and accept rate from day one; most tools ship blind.
-- **Surfaces:** a CLI for detection and drafting (`self-heal check`, `self-heal draft`), an MCP server exposing tools to agents (drift list, draft, accept/reject), and a lightweight local preview UI for the side-by-side diff and mapping editor.
+- **Surfaces:** a CLI for detection and drafting (`self-heal check`, `self-heal draft`), an MCP server exposing tools to agents (drift list, draft, accept/reject), and a native desktop app (Tauri: Rust backend + web frontend, or Electron) for the side-by-side diff and mapping editor. No browser or local server required; runs as a native window on your machine.
 - **Publishing:** accepted fixes become commits or PRs against your repo; auto-merge off by default.
 - **Open source:** MIT/Apache license, no hosted dependency.
 
