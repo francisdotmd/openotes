@@ -62,6 +62,31 @@ Key design choices: prefer machine-readable signals (types, schemas) for detecti
 - Incident reduction. Outdated runbooks cause outages; auto-flagging stale steps catches them before use.
 - Knowledge scales. As systems grow, manual doc maintenance breaks down; automation keeps pace.
 
+## Tech Stack
+
+**Detection (machine-readable signals):**
+- Schemas and types: OpenAPI, GraphQL, JSON Schema, TypeScript types, DB migrations (Prisma/Drizzle); diff via `openapi-diff`, `graphql-inspector`, or schema diff tools.
+- Tests: integration and E2E runners (Jest, Vitest, Playwright) as drift signals; runnable doc examples via doctests (mdx code fences executed in CI).
+- Changelogs and git: git diff plus changed-file heuristics to triage which docs to re-check.
+
+**Mapping layer (doc to source):**
+- A small metadata store (YAML frontmatter or sidecar JSON) linking doc sections to source symbols and file paths.
+- LLM-assisted auto-inference for the first pass; human confirm persists.
+
+**Drafting layer (LLM):**
+- An LLM API (Claude or GPT) constrained with the diff plus source truth plus the existing doc section (prompt: "update only the facts that changed").
+- Structured output (JSON) for section-level edits, applied as PR patches.
+
+**Integration and orchestration:**
+- CI: GitHub Actions (or GitLab) runs detection on PRs and on schedule; posts draft PRs or comments.
+- Git: all edits are commits and PRs for audit and rollback.
+- Cost control: async background jobs, per-repo caps, kill switch via feature flag (LaunchDarkly, Unleash, or a simple config).
+
+**Storage and state:**
+- Git for docs; a small DB (Postgres or SQLite) for mapping metadata, metrics, and job state if needed.
+
+**Minimal v1:** GitHub Actions plus an LLM API plus OpenAPI and TS type diff plus section-level markdown edits via PR. Skip auto-merge initially.
+
 ## Open Questions
 
 - Which signals best indicate drift (tests, types, changelogs)?
