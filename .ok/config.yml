@@ -55,4 +55,4 @@
 #   theme: system            # 'light' | 'dark' | 'system'
 
 autoSync:
-  default: true
+  default: false
