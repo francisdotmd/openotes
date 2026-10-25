@@ -85,7 +85,7 @@ Key design choices: prefer machine-readable signals (types, schemas) for detecti
 **Storage and state:**
 - Git for docs; a small DB (Postgres or SQLite) for mapping metadata, metrics, and job state if needed.
 
-**Minimal v1:** GitHub Actions plus an LLM API plus OpenAPI and TS type diff plus section-level markdown edits via PR. Skip auto-merge initially.
+**Minimal v1 with UI:** A small web app (Next.js or similar) with three views: (1) a drift dashboard listing flagged docs and their signals; (2) a side-by-side diff view showing the current doc vs. the LLM-drafted fix with accept, edit, reject actions; (3) a mapping editor to link doc sections to source symbols. Backed by the same CI detection (GitHub Actions running on PRs and schedule) and an LLM API for drafting. Auto-merge off; all accepted fixes become PRs. Auth via GitHub OAuth so it only touches repos the user owns.
 
 ## Open Questions
 
